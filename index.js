@@ -178,6 +178,7 @@ function oidcLogin({ service, cache, cookies }={}) {
       // generate random state data and nonce
       const state = crypto.randomBytes(32).toString('hex');
       const nonce = crypto.randomBytes(32).toString('hex');
+      service.addNonce(nonce)
     
       // Set cookie for validation on redirect
       res.cookie(oidcCookiePrefix + state, params.iss, cookieOptions)
@@ -224,7 +225,6 @@ function oidcVerify({ service, cache, cookies } = {}) {
   if (!service) throw new Error("The service object is missing.")
   let cookieOptions = Object.assign(defaultOptions.cookies, cookies)
   let cachePrefix = "miko-lti-"
-  let useNonceChecker = typeof service.isNonceOk === "function"
   if (typeof service.findPlatform !== "function") throw new Error("The service object is missing a findPlatform method.")
 
   const verifyhandler = async function(req, res, next) {
@@ -319,10 +319,9 @@ function oidcVerify({ service, cache, cookies } = {}) {
         if (nonce) throw new Error("Nonce already received.")
         await cache.set(keyName, verified.nonce)
       }
-      // have service object check nonce
-      if (useNonceChecker) {
-        if (!service.isNonceOk(verified.nonce)) throw new Error("Nonce already received.")
-      }
+      // tell service we are using nonce
+      // service should throw error if expired or already used
+      service.useNonce(verified.nonce)
 
       let lti = { 
         message: {
