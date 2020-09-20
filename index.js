@@ -178,7 +178,7 @@ function oidcLogin({ service, cache, cookies }={}) {
       // generate random state data and nonce
       const state = crypto.randomBytes(32).toString('hex');
       const nonce = crypto.randomBytes(32).toString('hex');
-      service.addNonce(nonce)
+      await service.addNonce(nonce)
     
       // Set cookie for validation on redirect
       res.cookie(oidcCookiePrefix + state, params.iss, cookieOptions)
@@ -321,7 +321,7 @@ function oidcVerify({ service, cache, cookies } = {}) {
       }
       // tell service we are using nonce
       // service should throw error if expired or already used
-      service.useNonce(verified.nonce)
+      await service.useNonce(verified.nonce)
 
       let lti = { 
         message: {
