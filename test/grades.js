@@ -1,6 +1,5 @@
-const { LtiGradingService, LtiActivityProgress, 
+const { LtiGradingService, LtiActivityProgress, LtiOutcomeService,
   LtiGradingProgress, LtiScopes } = require("../lib/index")
-const { LtiOutcomeService } = require("../lib/lti-outcome")
 const fs = require("fs")
 
 const ltiservice = {
@@ -65,10 +64,7 @@ async function AGSGetLineItem() {
   adv.authorize().then(token => { 
     adv.getLineitem({ url: lti.resource.lineitemurl })
       .then(lineitem => {
-        console.log("AGS Get Lineitem - Success", {
-          label: lineitem.label, 
-          scoreMaximum: lineitem.scoreMaximum
-        }) 
+        console.log("AGS Get Lineitem - Success", lineitem) 
       }).catch(err => {
         console.log("AGS Get Lineitem - Failure", err) 
       })
@@ -76,7 +72,6 @@ async function AGSGetLineItem() {
     console.log("AGS Get Lineitem - Failure", err) 
   })
 }
-
 
 async function AGSSetScore() {
   let platform = await ltiservice.findPlatform()
@@ -105,11 +100,40 @@ async function AGSSetScore() {
   })
 }
 
+async function AGSGetScore() {
+  let platform = await ltiservice.findPlatform()
+  let lti = fs.readFileSync("./test/last-1-3-launch.json", "utf8")
+  lti = JSON.parse(lti)
+  const adv = new LtiGradingService({ url: platform.tokenurl, 
+                                clientid: platform.clientid,
+                                scopes: LtiScopes.result,
+                                jwtkey: platform.privatepem  })
+  adv.authorize().then(token => { 
+    adv.getResults({ url: lti.resource.lineitemurl,
+                     userId: lti.user.ltiid,
+                  })
+      .then(results => {
+        console.log("AGS Get Score - Success", results) 
+      }).catch(err => {
+        console.log("AGS Get Score - Failure", err) 
+      })
+  }).catch(err => {
+    console.log("AGS Get Score - Failure", err) 
+  })
+}
+
+
 async function OutcomeSetScore() {
-  let outcome = new LtiOutcomeService()
+  let platform = await ltiservice.findPlatform()
+  let lti = fs.readFileSync("./test/last-1-3-launch.json", "utf8")
+  lti = JSON.parse(lti)
+  let outcome = new LtiOutcomeService(platform.consumerKey, platform.secret, lti.outcome.serviceurl)
+  outcome.publishScore({sourcedId: lti.outcome.sourcedid, 
+                        scoreGiven: .83, comment: "Nice work"})
 
 }
 
-//AGSGetLineItem()
-//AGSSetScore()
-OutcomeSetScore()
+AGSGetLineItem()
+AGSSetScore()
+AGSGetScore()
+//OutcomeSetScore()
