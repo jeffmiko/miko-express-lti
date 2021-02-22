@@ -1,0 +1,29 @@
+
+Video tutorial explaining LTI Advantage Launch, OIDC, service API
+https://www.youtube.com/watch?v=g3y4vwtP6vQ&list=PLb5mG7w3UZkPKHODmz5YCkIqnWQEsjMkd&index=3
+
+Creating JWT RS256 private and public keys
+https://gist.github.com/ygotthilf/baa58da5c3dd1f69fae9
+
+LTI Advantage Service API Security
+https://www.youtube.com/watch?v=PavmOAiMUzg&list=PLb5mG7w3UZkPKHODmz5YCkIqnWQEsjMkd&index=4
+
+LTI Assignment & Grading Service
+https://www.imsglobal.org/spec/lti-ags/v2p0
+
+LTI Name & Role Provisioning Service
+http://www.imsglobal.org/spec/lti-nrps/v2p0
+
+Learning Tools Interoperability Core Specification 1.3 
+http://www.imsglobal.org/spec/lti/v1p3/
+
+LTI 1.1: Part 1 - What is LTI, Basic LTI Launch
+https://www.youtube.com/watch?v=I0zhjzCxovw
+
+
+
+Moodle 3.7 Release date: May 20 2019 
+https://docs.moodle.org/dev/Moodle_3.7_release_notes
+
+Canvas Release date: June 22 2019
+https://community.canvaslms.com/t5/Releases/Canvas-Release-Notes-2019-06-22/ta-p/244935
