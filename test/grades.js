@@ -133,7 +133,7 @@ async function OutcomeSetScore() {
 
 }
 
-//AGSGetLineItem()
-//AGSSetScore()
-//setTimeout(AGSGetScore, 2000)
+AGSGetLineItem()
+AGSSetScore()
+setTimeout(AGSGetScore, 2000)
 //OutcomeSetScore()

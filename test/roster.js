@@ -65,12 +65,12 @@ async function NRPSGetRoster() {
         for(let user of members) {
           //console.log(user) 
         }
-        console.log("Members:", members.length) 
+        console.log("NRPSGetRoster: Success, count=", members.length) 
       }).catch(err => {
-        console.log("Members: Failed", err)
+        console.log("NRPSGetRoster: Failed", err)
       })
   }).catch(err => {
-    console.log("Members: Failed", err)
+    console.log("NRPSGetRoster: Failed", err)
   })
 }
 
@@ -88,12 +88,12 @@ async function NRPSGetInstructors() {
         for(let user of members) {
           //console.log(user) 
         }
-        console.log("Instructors:", members.length) 
+        console.log("NRPSGetInstructors: Success, count=", members.length) 
       }).catch(err => {
-        console.log("Instructors: Failed", err)
+        console.log("NRPSGetInstructors: Failed", err)
       })
   }).catch(err => {
-    console.log("Instructors: Failed", err)
+    console.log("NRPSGetInstructors: Failed", err)
   })
 }
 
@@ -111,12 +111,12 @@ async function NRPSGetLearners() {
         for(let user of members) {
           //console.log(user) 
         }
-        console.log("Learners:", members.length) 
+        console.log("NRPSGetLearners: Success, count=", members.length) 
       }).catch(err => {
-        console.log("Learners: Failed", err)
+        console.log("NRPSGetLearners: Failed", err)
       })
   }).catch(err => {
-    console.log("Learners: Failed", err)
+    console.log("NRPSGetLearners: Failed", err)
   })
 }
 

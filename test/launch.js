@@ -129,7 +129,7 @@ app.all('/ltiapp', LtiVerify({ service: ltiservice, logger: logDebug }), async (
     fs.writeFileSync("./test/last-1-3-launch.json", JSON.stringify(req.lti, null, 2))
 
   } else if (req.lti.message.type == "LtiDeepLinkingRequest") {
-    throw new Error("Deep linknig not implemented")
+    throw new Error("Deep linking not implemented")
     // return content selection page
     let message_jwt = {
       "iss": req.lti.platform.clientid,
