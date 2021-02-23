@@ -84,8 +84,8 @@ async function AGSSetScore() {
   adv.authorize().then(token => { 
     adv.publishScore({ url: lti.resource.lineitemurl,
                        userId: lti.user.ltiid,
-                       comment: "Good job on this work", 
-                       scoreGiven: .88,
+                       comment: "Wow Great Work", 
+                       scoreGiven: .935,
                        activityProgress: LtiActivityProgress.FullyGraded,
                        gradingProgress: LtiGradingProgress.Submitted,
                        timestamp: new Date()
@@ -115,10 +115,10 @@ async function AGSGetScore() {
       .then(results => {
         console.log("AGS Get Score - Success", results) 
       }).catch(err => {
-        console.log("AGS Get Score - Failure", err) 
+        console.log("AGS Get Score - Failure", err.message) 
       })
   }).catch(err => {
-    console.log("AGS Get Score - Failure", err) 
+    console.log("AGS Get Score - Failure", err.message) 
   })
 }
 
@@ -133,7 +133,7 @@ async function OutcomeSetScore() {
 
 }
 
-AGSGetLineItem()
-AGSSetScore()
-AGSGetScore()
+//AGSGetLineItem()
+//AGSSetScore()
+//setTimeout(AGSGetScore, 2000)
 //OutcomeSetScore()
