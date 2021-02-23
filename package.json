@@ -19,7 +19,7 @@
     "miko"
   ],
   "author": "Jeff A. Miko",
-  "license": "",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jeffmiko/miko-express-lti/issues"
   },

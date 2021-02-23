@@ -2,30 +2,45 @@ const express = require("express")
 const cors = require("cors")
 const helmet = require("helmet")
 const cookieParser = require("cookie-parser")
-const { LtiLogin, LtiVerify, LtiBasic } = require("../lib/index");
+const { LtiLogin, LtiVerify, LtiBasic, LtiFields } = require("../lib/index");
 const fs = require("fs")
+const crypto = require("crypto")
 
 /*
 LTI 1.3 Setup 
-Tool URL:     http://localhost:3000/lti13
+Tool URL:     http://localhost:3000/ltiapp
 Logon URL:    http://localhost:3000/oidclogin
-Redirect URL: http://localhost:3000/lti13
+Redirect URL: http://localhost:3000/ltiapp
+Public key:   Use contents of public.pem in keys folder
 
 LTI 1.1 Setup 
-Tool URL:     http://localhost:3000/lti1
+Tool URL:     http://localhost:3000/ltibasic
 Consumer Key: miko-lti-poc
 Secret:       e439f1bf4af3a47a81fb9387ef2c
 */
 
+function logDebug(msg, data) {
+  //console.log(msg, data ? data : "")
+}
+
+// requires 5 methods (see LtiService class)
 const ltiservice = {
   nonces: {},
 
-  // needs these 5 methods
+  /**
+   * @description Finds a platform record based on a set of parameters
+   * @param {Object}  params - Parameters object used to identify tool consumer (aka LMS)
+   * @param {Booelan} [params.url] - The URL for LTI 1.3 tool consumers 
+   * @param {Booelan} [params.clientid] - The client Id for LTI 1.3 tool consumers
+   * @param {Booelan} [params.deploymentid] - The deployment Id for LTI 1.3 tool consumers (optional)
+   * @param {Booelan} [params.consumerkey] - The unique consumer key for a LTI 1.0/1.1 tool consumer
+   * @returns {Object} - 
+   */
   async findPlatform(params) {
-    // needs to match your LMS
+    // result needs to match your LMS
     return {
       url: "http://mymoodle.local/moodle",
-      // LTI 1.3
+      // required for LTI 1.3
       deploymentid: "5",
       clientid: "cHpMWgNeSqketCZ",
       keytype: "JWK_SET",
@@ -33,9 +48,9 @@ const ltiservice = {
       authurl: "http://mymoodle.local/moodle/mod/lti/auth.php",
       tokenurl: "http://mymoodle.local/moodle/mod/lti/token.php",
       jwksurl: "http://mymoodle.local/moodle/mod/lti/certs.php",
-      // LTI 1.0/1.1
+      // required for LTI 1.0/1.1
       secret: "e439f1bf4af3a47a81fb9387ef2c",
-      consumerKey: "miko-lti-poc",
+      consumerkey: "miko-lti-poc",
     }
   },
 
@@ -66,10 +81,7 @@ const ltiservice = {
 
 }
 
-function logDebug(msg, data) {
-  console.log(msg, data || "")
-}
-
+// create Express web server
 const app = express()    
   
 // dont mention Express in headers
@@ -98,22 +110,49 @@ app.use(cookieParser("c21411f67ab2a4e243355a77307ec7e2"))
 
 // LTI 1.3 initiate login, must not be behind any authentication handlers
 // This is the "Initiate login URL" you will specify int he LMS tool setup
-app.all('/oidclogin', LtiLogin({ service: ltiservice, logger: null }) )
+app.all('/oidclogin', LtiLogin({ service: ltiservice, logger: logDebug }) )
 
 
-// LTI 1.3 redirect verification, must not be behind any authentication handlers
+// LTI 1.3 redirect, must not be behind any authentication handlers
 // This is the "Redirection URI" you will specify int he LMS tool setup
 // After odic login, the redirect URI is called. 
 // You could have several redirect URI's or use custom LTI parameters for different apps 
-app.all('/lti13', LtiVerify({ service: ltiservice, logger: null }), async (req, res, next) => {
+app.all('/ltiapp', LtiVerify({ service: ltiservice, logger: logDebug }), async (req, res, next) => {
 
-  // lti property has LTI data from launch request
+  console.log(`LTI app received a ${req.lti.message.type} message`)
 
-  // don't need original JWT token
-  //delete req.lti.raw
+  // lti property has LTI data 
+  if (req.lti.message.type == "LtiResourceLinkRequest") {
+    // show specific resource
 
-  // save last launch details to test assignment and grade service
-  fs.writeFileSync("./test/last-1-3-launch.json", JSON.stringify(req.lti, null, 2))
+    // save last launch details to test assignment and grade service
+    fs.writeFileSync("./test/last-1-3-launch.json", JSON.stringify(req.lti, null, 2))
+
+  } else if (req.lti.message.type == "LtiDeepLinkingRequest") {
+    throw new Error("Deep linknig not implemented")
+    // return content selection page
+    let message_jwt = {
+      "iss": req.lti.platform.clientid,
+      "aud": [req.lti.platform.url],
+      "exp": Date.now()/1000 + 600,
+      "iat": Date.now()/1000,
+      "nonce": crypto.randomBytes(16).toString("hex"),
+      "https://purl.imsglobal.org/spec/lti/claim/deployment_id": req.lti.platform.deploymentid,
+      "https://purl.imsglobal.org/spec/lti/claim/message_type": "LtiDeepLinkingResponse",
+      "https://purl.imsglobal.org/spec/lti/claim/version": "1.3.0",
+      "https://purl.imsglobal.org/spec/lti-dl/claim/content_items": [
+        // TODO: See links for ideas
+        // http://www.imsglobal.org/spec/lti-dl/v2p0#deep-linking-response-example
+        // https://community.canvaslms.com/t5/Developers-Group/Unable-to-pass-custom-data-in-LTI-Launch-request-What-is-the/td-p/199928
+      ],
+      "https://purl.imsglobal.org/spec/lti-dl/claim/data": req.lti.settings.deeplinking.data,
+    }
+    // encode JWT
+    //return JWT::encode($message_jwt, $this->registration->get_tool_private_key(), 'RS256', $this->registration->get_kid());
+
+  } else {
+    throw new Error(`Received an invalid ${req.lti.message.type} message`)
+  }
 
   // just returning JSON, but could redirect to your app
   res.setHeader("Content-Type", "application/json")
@@ -121,14 +160,12 @@ app.all('/lti13', LtiVerify({ service: ltiservice, logger: null }), async (req, 
   
 })
 
+
 // LTI 1.0/1.1 Basic Authentication
 // You could have several redirect URI's or use custom LTI parameters for different apps 
-app.all('/lti1', LtiBasic({ service: ltiservice, logger: null }), async (req, res, next) => {
+app.all('/ltibasic', LtiBasic({ service: ltiservice }), async (req, res, next) => {
   
   // lti property has LTI data from launch request
-
-  // don't need original post form data
-  //delete req.lti.raw
 
   // save last launch details to test basic outcomes
   fs.writeFileSync("./test/last-1-1-launch.json", JSON.stringify(req.lti, null, 2))
