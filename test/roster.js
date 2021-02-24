@@ -1,55 +1,6 @@
 const { LtiNameRoleService  } = require("../lib/index")
 const fs = require("fs")
-
-const ltiservice = {
-  nonces: {},
-
-  // needs these 5 methods
-  async findPlatform(params) {
-    // needs to match your LMS
-    return {
-      url: "http://mymoodle.local/moodle",
-      // LTI 1.3
-      deploymentid: "5",
-      clientid: "cHpMWgNeSqketCZ",
-      keytype: "JWK_SET",
-      keyval: "http://mymoodle.local/moodle/mod/lti/certs.php",
-      authurl: "http://mymoodle.local/moodle/mod/lti/auth.php",
-      tokenurl: "http://mymoodle.local/moodle/mod/lti/token.php",
-      jwksurl: "http://mymoodle.local/moodle/mod/lti/certs.php",
-      // LTI 1.0/1.1
-      secret: "e439f1bf4af3a47a81fb9387ef2c",
-      consumerKey: "miko-lti-poc",
-      privatepem: fs.readFileSync("./test/keys/private.pem", "utf8"),
-    }
-  },
-
-  async useNonce(nonce, platform) {
-    // using in memory dictionary, but better to use database
-    let now = new Date()
-    if (!this.nonces[nonce]) throw "Nonce does not exist"
-    if (this.nonces[nonce].used) throw "Nonce has already been used"
-    if (this.nonces[nonce].expires < now) throw "Nonce has expired"
-    this.nonces[nonce].used = true
-  },
-
-  async addNonce(nonce, platform) {
-    // using in memory dictionary, but better to use database
-    let now = new Date()
-    let expires = new Date(now.getTime() + 10*60000); // 10 minutes
-    if (this.nonces[nonce]) throw "Nonce already exists"
-    this.nonces[nonce] = {
-    expires, used: false
-    }
-  },
-
-  async getCache(key) {
-  },
-
-  async setCache(key, value, ttl) { 
-  },
-
-}
+const ltiservice = require("./service")
 
 
 async function NRPSGetRoster() {
