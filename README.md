@@ -24,6 +24,12 @@ There are three functions that handle LTI launches. See the **launch.js** file i
 
 #### Sample LTI 1.3 Code (test/launch.js)
   
+	const  express = require("express")
+	const  cors = require("cors")
+	const  helmet = require("helmet")
+	const  cookieParser = require("cookie-parser")
+	const { LtiLogin, LtiVerify, LtiBasic } = require("miko-express-lti");
+
 	// You need to implement these functions. 
 	const  ltiservice = {
 		async  findPlatform(params) { },
