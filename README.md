@@ -78,7 +78,7 @@ The **LtiNameRoleService** class provides methods to get learners, instructors, 
 
 ### Generating encryption keys
 
-The LTI 1.3 and 2.0 require encryption keys for creating and validating JavaScript Web Tokens (JWTs). The **LtiKeySet** class provides methods to generate public and private keys in both PEM and JWK formats. See the **keyset.js** file in the **test** folder for a complete example.
+The LTI 1.3 and 2.0 require encryption keys for creating and validating JSON Web Tokens (JWTs). The **LtiKeySet** class provides methods to generate public and private keys in both PEM and JWK formats. See the **keyset.js** file in the **test** folder for a complete example.
 
 ### Providing an service object
 
