@@ -39,6 +39,7 @@ const ltiservice = {
   async findPlatform(params) {
     // result needs to match your LMS
     return {
+      // required for all LTI versions
       url: "http://mymoodle.local/moodle",
       // required for LTI 1.3
       deploymentid: "5",
@@ -48,7 +49,7 @@ const ltiservice = {
       authurl: "http://mymoodle.local/moodle/mod/lti/auth.php",
       tokenurl: "http://mymoodle.local/moodle/mod/lti/token.php",
       jwksurl: "http://mymoodle.local/moodle/mod/lti/certs.php",
-      // required for LTI 1.0/1.1
+      // required for LTI 1.1
       secret: "e439f1bf4af3a47a81fb9387ef2c",
       consumerkey: "miko-lti-poc",
     }
@@ -109,12 +110,12 @@ app.use(cookieParser("c21411f67ab2a4e243355a77307ec7e2"))
 
 
 // LTI 1.3 initiate login, must not be behind any authentication handlers
-// This is the "Initiate login URL" you will specify int he LMS tool setup
+// This is the "Initiate login URL" you will specify in your LMS tool setup
 app.all('/oidclogin', LtiLogin({ service: ltiservice, logger: logDebug }) )
 
 
 // LTI 1.3 redirect, must not be behind any authentication handlers
-// This is the "Redirection URI" you will specify int he LMS tool setup
+// This is the "Redirection URI" you will specify in your LMS tool setup
 // After odic login, the redirect URI is called. 
 // You could have several redirect URI's or use custom LTI parameters for different apps 
 app.all('/ltiapp', LtiVerify({ service: ltiservice, logger: logDebug }), async (req, res, next) => {

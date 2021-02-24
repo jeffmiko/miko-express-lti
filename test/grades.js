@@ -1,6 +1,9 @@
 const { LtiGradingService, LtiActivityProgress, LtiOutcomeService,
   LtiGradingProgress, LtiScopes } = require("../lib/index")
 const fs = require("fs")
+const crypto = require("crypto")
+const xmlbuilder = require('xmlbuilder');
+
 
 const ltiservice = {
   nonces: {},
@@ -127,13 +130,15 @@ async function OutcomeSetScore() {
   let platform = await ltiservice.findPlatform()
   let lti = fs.readFileSync("./test/last-1-3-launch.json", "utf8")
   lti = JSON.parse(lti)
-  let outcome = new LtiOutcomeService(platform.consumerKey, platform.secret, lti.outcome.serviceurl)
-  outcome.publishScore({sourcedId: lti.outcome.sourcedid, 
+  let outcome = new LtiOutcomeService(platform.consumerKey, platform.secret)
+  outcome.publishScore({url: lti.outcome.serviceurl,
+                        sourcedId: lti.outcome.sourcedid, 
                         scoreGiven: .83, comment: "Nice work"})
 
+          
 }
 
-AGSGetLineItem()
-AGSSetScore()
-setTimeout(AGSGetScore, 2000)
-//OutcomeSetScore()
+//AGSGetLineItem()
+//AGSSetScore()
+//setTimeout(AGSGetScore, 2000)
+OutcomeSetScore()

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "nodemon ./test/launch.js",
     "test-grades": "node ./test/grades.js",
-    "test-roster": "node ./test/roster.js"
+    "test-roster": "node ./test/roster.js",
+    "test-keyset": "node ./test/keyset.js"
   },
   "repository": {
     "type": "git",
