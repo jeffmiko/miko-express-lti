@@ -9,8 +9,8 @@ An ExpressJS route handler for LTI requests between a tool consumer such as Mood
  - LTI 1.1 Basic launch requests ([spec](https://www.imsglobal.org/specs/ltiv1p1p1/implementation-guide))
 
 ### Not Supported
- - LTI content selection requests
- - LTI registration requests
+ - LTI 2.0 Deep Linking requests ([spec](https://www.imsglobal.org/spec/lti-dl/v2p0))
+ - LTI 2.0 Tool Proxy requests ([spec](http://www.imsglobal.org/specs/ltiv2p0/implementation-guide#toc-25))
  - LTI 1.1 Outcome Management ([spec](https://www.imsglobal.org/specs/ltiomv1p0/specification))
 
 ## Usage
