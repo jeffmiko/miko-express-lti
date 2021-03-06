@@ -4,6 +4,7 @@ const helmet = require("helmet")
 const cookieParser = require("cookie-parser")
 const { LtiLogin, LtiVerify, LtiBasic, LtiFields } = require("../lib/index");
 const fs = require("fs")
+const https = require("https")
 const crypto = require("crypto")
 const ltiservice = require("./service")
 
@@ -20,8 +21,14 @@ Consumer Key: miko-lti-poc
 Secret:       e439f1bf4af3a47a81fb9387ef2c
 */
 
+const HTTP_PORT=8000
+const HTTPS_PORT=8080
+const HTTPS_KEY = "./test/keys/ssl/private.key"
+const HTTPS_CERT = "./test/keys/ssl/certificate.crt"
+
+
 function logDebug(msg, data) {
-  //console.log(msg, data ? data : "")
+  console.log(msg, data ? data : "")
 }
 
 
@@ -51,6 +58,14 @@ app.use(express.raw())
 app.use(express.text())
 app.use(cookieParser("c21411f67ab2a4e243355a77307ec7e2"))
 
+
+if (HTTP_PORT != HTTPS_PORT && fs.existsSync(HTTPS_KEY)) {
+  // force HTTP to HTTPS
+  app.use(async (req, res, next) => {
+    if (req.secure) next()
+    else res.redirect(`https://${req.hostname}:${HTTPS_PORT}${req.url}`)
+  })
+}
 
 // LTI 1.3 initiate login, must not be behind any authentication handlers
 // This is the "Initiate login URL" you will specify in your LMS tool setup
@@ -120,7 +135,24 @@ app.all('/ltibasic', LtiBasic({ service: ltiservice }), async (req, res, next) =
   
 })
 
+// check if LTI server working
+app.all('/', async (req, res, next) => {
+  res.send("OK")  
+})
+
 // start listening
-app.listen(3000, () =>
-  console.log(`Listening for LTI launches on port 3000`)
+app.listen(HTTP_PORT, () =>
+  console.log(`Listening for LTI launches on port ${HTTP_PORT}`)
 )
+
+// listen on HTTPS
+if (HTTP_PORT != HTTPS_PORT && fs.existsSync(HTTPS_KEY)) {
+  const httpsServer = https.createServer({
+    key: fs.readFileSync(HTTPS_KEY),
+    cert: fs.readFileSync(HTTPS_CERT),
+  }, app);
+  
+  httpsServer.listen(HTTPS_PORT, () => {
+    console.log(`Listening for LTI launches on port ${HTTP_PORT}`)
+  });
+}

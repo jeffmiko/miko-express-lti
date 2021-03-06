@@ -14,6 +14,24 @@ const ltiservice = {
    * @returns {Object} - 
    */
   async findPlatform(params) {
+
+    return {
+      // required for all LTI versions
+      url: "https://dep-training.strategiced.com",
+      // Canvas LTI 1.3
+      deploymentid: "104:5e94ec22f2c94f1296a795914f5c589417a388dd",
+      clientid: "10000000000012",
+      keytype: "JWK_SET",
+      keyval: "https://dep-training.strategiced.com/api/lti/security/jwks",
+      authurl: "https://dep-training.strategiced.com/api/lti/authorize_redirect",
+      tokenurl: "https://dep-training.strategiced.com/login/oauth2/token",
+      jwksurl: "https://dep-training.strategiced.com/api/lti/security/jwks",
+      privatepem: fs.readFileSync("./test/keys/private.pem", "utf8"),
+      // LTI 1.0/1.1
+      secret: "e439f1bf4af3a47a81fb9387ef2c",
+      consumerKey: "miko-lti-poc",
+    }
+
     // needs to match your LMS
     return {
       // required for all LTI versions

@@ -106,3 +106,4 @@ docs/bb-launch.txt
 docs/moodle-launch.txt
 test/*.json
 docs/moodle-select-content.txt
+test/keys/ssl/*
