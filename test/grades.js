@@ -15,7 +15,11 @@ async function AGSGetLineItem() {
   const adv = new LtiGradingService({ url: platform.tokenurl, 
                                 clientid: platform.clientid,
                                 scopes: LtiScopes.lineitem,
-                                jwtkey: platform.privatepem  })
+                                jwtkey: platform.privatepem  ,
+                                // pass a keyid if you setup LTI with a keyset URL
+                                // instead of a public PEM string
+                                jwtopts: { keyid: platform.kid }
+                              })
   adv.authorize().then(token => { 
     adv.getLineitem({ url: lti.resource.lineitemurl })
       .then(lineitem => {
