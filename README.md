@@ -33,6 +33,7 @@ There are three functions that handle LTI launches. See the **launch.js** file i
 	// You need to implement these functions. 
 	const  ltiservice = {
 		async  findPlatform(params) { },
+		async  findDeployment(params) { },
 		async  useNonce(nonce, platform) { },
 		async  addNonce(nonce, platform) { },
 		async  getCache(key) { },
@@ -90,6 +91,7 @@ The LTI 1.3 and 2.0 require encryption keys for creating and validating JSON Web
 
 This library requires you to provide a service object that contains 5 methods. The **LtiService** class provides an abstract class with these methods. See the **launch.js** file in the **test** folder for an example of an object that implements these methods. The methods are:
  - **findPlatform** uses parameters to locate and return a platform object. 
+ - **findDeployment** uses parameters to locate and return a deployment object. 
  - **addNonce** adds a new nonce to the a data store. The nonce must not already exist.
  - **useNonce** marks a nonce as being used. A nonce must exist and can only be used once.
  - **getCache** gets a value from cache based on a key. Optional. Can improve performance.

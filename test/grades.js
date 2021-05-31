@@ -84,7 +84,7 @@ async function AGSGetScore() {
 
 async function OutcomeSetScore() {
   let platform = await ltiservice.findPlatform()
-  let lti = fs.readFileSync("./test/last-1-3-launch.json", "utf8")
+  let lti = fs.readFileSync("./test/last-1-1-launch.json", "utf8")
   lti = JSON.parse(lti)
   let outcome = new LtiOutcomeService(platform.consumerKey, platform.secret)
   outcome.publishScore({url: lti.outcome.serviceurl,

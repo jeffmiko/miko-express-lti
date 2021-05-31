@@ -153,6 +153,6 @@ if (HTTP_PORT != HTTPS_PORT && fs.existsSync(HTTPS_KEY)) {
   }, app);
   
   httpsServer.listen(HTTPS_PORT, () => {
-    console.log(`Listening for LTI launches on port ${HTTP_PORT}`)
+    console.log(`Listening for LTI launches on port ${HTTPS_PORT}`)
   });
 }
