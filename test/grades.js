@@ -86,7 +86,7 @@ async function OutcomeSetScore() {
   let platform = await ltiservice.findPlatform()
   let lti = fs.readFileSync("./test/last-1-1-launch.json", "utf8")
   lti = JSON.parse(lti)
-  let outcome = new LtiOutcomeService(platform.consumerKey, platform.secret)
+  let outcome = new LtiOutcomeService(platform.consumerkey, platform.secret)
   outcome.publishScore({url: lti.outcome.serviceurl,
                         sourcedId: lti.outcome.sourcedid, 
                         scoreGiven: .83, comment: "Nice work"})

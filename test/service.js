@@ -7,10 +7,10 @@ const ltiservice = {
   /**
    * @description Finds a platform record based on a set of parameters
    * @param {Object}  params - Parameters object used to identify tool consumer (aka LMS)
-   * @param {Booelan} [params.url] - The URL for LTI 1.3 tool consumers 
-   * @param {Booelan} [params.clientid] - The client Id for LTI 1.3 tool consumers
-   * @param {Booelan} [params.deploymentid] - The deployment Id for LTI 1.3 tool consumers (optional)
-   * @param {Booelan} [params.consumerkey] - The unique consumer key for a LTI 1.0/1.1 tool consumer
+   * @param {Boolean} [params.url] - The URL for LTI 1.3 tool consumers 
+   * @param {Boolean} [params.clientid] - The client Id for LTI 1.3 tool consumers
+   * @param {Boolean} [params.deploymentid] - The deployment Id for LTI 1.3 tool consumers (optional)
+   * @param {Boolean} [params.consumerkey] - The unique consumer key for a LTI 1.0/1.1 tool consumer
    * @returns {Object} - 
    */
   async findPlatform(params) {
@@ -29,7 +29,7 @@ const ltiservice = {
       privatepem: fs.readFileSync("./test/keys/private.pem", "utf8"),
       // LTI 1.0/1.1
       secret: "e439f1bf4af3a47a81fb9387ef2c",
-      consumerKey: "miko-lti-poc",
+      consumerkey: "miko-lti-poc",
     }
 
     // needs to match your LMS
@@ -47,7 +47,7 @@ const ltiservice = {
       privatepem: fs.readFileSync("./test/keys/private.pem", "utf8"),
       // LTI 1.0/1.1
       secret: "e439f1bf4af3a47a81fb9387ef2c",
-      consumerKey: "miko-lti-poc",
+      consumerkey: "miko-lti-poc",
     }
   },
 
