@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const helmet = require("helmet")
 const cookieParser = require("cookie-parser")
-const { LtiLogin, LtiVerify, LtiBasic, LtiFields } = require("../lib/index");
+const { LtiLogin, LtiVerify, LtiBasic, LtiLaunch, LtiFields } = require("../lib/index");
 const fs = require("fs")
 const https = require("https")
 const crypto = require("crypto")
@@ -23,8 +23,8 @@ Secret:       e439f1bf4af3a47a81fb9387ef2c
 
 const HTTP_PORT=8000
 const HTTPS_PORT=8080
-const HTTPS_KEY = "./test/keys/ssl/private.key"
-const HTTPS_CERT = "./test/keys/ssl/certificate.crt"
+const HTTPS_KEY = "./test/keys/ssl/mikogist.com.key"
+const HTTPS_CERT = "./test/keys/ssl/mikogist.com.ssl.crt"
 
 
 function logDebug(msg, data) {
@@ -76,7 +76,7 @@ app.all('/oidclogin', LtiLogin({ service: ltiservice, logger: logDebug }) )
 // This is the "Redirection URI" you will specify in your LMS tool setup
 // After odic login, the redirect URI is called. 
 // You could have several redirect URI's or use custom LTI parameters for different apps 
-app.all('/ltiapp', LtiVerify({ service: ltiservice, logger: logDebug }), async (req, res, next) => {
+app.all('/ltiapp', LtiLaunch({ service: ltiservice, logger: logDebug }), async (req, res, next) => {
 
   console.log(`LTI app received a ${req.lti.message.type} message`)
 
@@ -122,7 +122,7 @@ app.all('/ltiapp', LtiVerify({ service: ltiservice, logger: logDebug }), async (
 
 // LTI 1.0/1.1 Basic Authentication
 // You could have several redirect URI's or use custom LTI parameters for different apps 
-app.all('/ltibasic', LtiBasic({ service: ltiservice }), async (req, res, next) => {
+app.all('/ltibasic', LtiLaunch({ service: ltiservice }), async (req, res, next) => {
   
   // lti property has LTI data from launch request
 
